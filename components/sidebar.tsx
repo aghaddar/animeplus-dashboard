@@ -58,8 +58,8 @@ export function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="hidden border-r bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:block">
-      <div className="flex h-full max-h-screen flex-col gap-2">
+  <aside data-sidebar="root" className="hidden w-64 min-w-0 border-r bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:block overflow-y-auto sticky top-0 h-screen self-start">
+    <div className="flex h-full max-h-screen flex-col gap-2">
         <div className="flex h-14 items-center border-b px-6">
           <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
             <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10">
