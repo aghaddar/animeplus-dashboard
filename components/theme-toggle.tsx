@@ -7,13 +7,33 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useEffect, useState } from "react"
 
 export function ThemeToggle() {
-  const { setTheme, theme } = useTheme()
+  const { setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   // Avoid hydration mismatch
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  // Helper to apply theme both via next-themes and directly to the html element
+  const applyTheme = (t: "light" | "dark" | "system") => {
+    setTheme(t)
+    if (typeof window === "undefined") return
+    try {
+      if (t === "system") {
+        // respect system preference
+        const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+        document.documentElement.classList.toggle("dark", prefersDark)
+        localStorage.setItem("theme", "system")
+      } else {
+        document.documentElement.classList.toggle("dark", t === "dark")
+        // store user's explicit choice
+        localStorage.setItem("theme", t)
+      }
+    } catch (e) {
+      // ignore
+    }
+  }
 
   if (!mounted) {
     return (
@@ -35,9 +55,9 @@ export function ThemeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>Light</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>Dark</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>System</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => applyTheme("light")}>Light</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => applyTheme("dark")}>Dark</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => applyTheme("system")}>System</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

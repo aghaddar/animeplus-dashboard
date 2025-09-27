@@ -96,6 +96,12 @@ body {
   }
 }
 
+/* Ensure html uses the light background when the dark class is not present */
+html:not(.dark) {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
 /* Modern thin scrollbar for sidebar only */
 [data-sidebar="root"] {
   scrollbar-width: thin; /* Firefox */
