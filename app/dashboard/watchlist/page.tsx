@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "@/context/auth-context"
 import { watchlistApi, type Watchlist } from "@/lib/api-client"
+import { dashboardService } from "@/lib/dashboard-service"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -48,7 +49,22 @@ export default function WatchlistPage() {
     setIsLoading(true)
     try {
       const data = await watchlistApi.getMyWatchlist(token)
-      setWatchlists(data)
+      // Enrich with metadata where possible
+      const enriched = await Promise.all(
+        data.map(async (item) => {
+          try {
+            const meta = await dashboardService.getAnimeMeta(item.anime_title)
+            return {
+              ...item,
+              img_url: item.img_url || meta?.image || item.img_url,
+              anime_title: meta?.title || item.anime_title,
+            }
+          } catch (e) {
+            return item
+          }
+        }),
+      )
+      setWatchlists(enriched)
     } catch (error) {
       console.error("Failed to fetch watchlist:", error)
       toast({

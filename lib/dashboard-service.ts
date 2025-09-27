@@ -295,4 +295,27 @@ export const dashboardService = {
       return mockAnimeList
     }
   },
+  // Get metadata for a single anime (by title or id) using a cached anime list to reduce requests
+  _cachedAnimeList: null as any[] | null,
+  getAnimeMeta: async (query: string) => {
+    try {
+      // ensure cache
+      if (!dashboardService._cachedAnimeList) {
+        const list = await dashboardService.getAnimeList()
+        dashboardService._cachedAnimeList = list
+      }
+      const list = dashboardService._cachedAnimeList || []
+      const q = (query || "").toString().toLowerCase()
+      // try exact matches first
+      let item = list.find((a: any) => (a.id && a.id.toString().toLowerCase() === q) || (a.title && a.title.toLowerCase() === q))
+      if (!item) {
+        // try includes
+        item = list.find((a: any) => a.title && a.title.toLowerCase().includes(q))
+      }
+      return item || null
+    } catch (e) {
+      console.warn("getAnimeMeta failed:", e)
+      return null
+    }
+  },
 }

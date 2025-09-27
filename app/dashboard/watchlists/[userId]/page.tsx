@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { useAuth } from "@/context/auth-context"
 import { userApi, watchlistApi, type User, type Watchlist } from "@/lib/api-client"
+import { dashboardService } from "@/lib/dashboard-service"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -37,7 +38,18 @@ export default function UserWatchlistPage() {
       // In a real implementation, you'd want a backend endpoint to get watchlist by user ID
       const allWatchlists = await watchlistApi.getAllWatchlists(token!)
       const userWatchlist = allWatchlists.filter((item) => item.user_id === Number.parseInt(userId))
-      setWatchlist(userWatchlist)
+      // enrich
+      const enriched = await Promise.all(
+        userWatchlist.map(async (item) => {
+          const meta = await dashboardService.getAnimeMeta(item.anime_title)
+          return {
+            ...item,
+            img_url: item.img_url || meta?.image || item.img_url,
+            anime_title: meta?.title || item.anime_title,
+          }
+        }),
+      )
+      setWatchlist(enriched)
     } catch (error) {
       console.error("Failed to fetch data:", error)
       toast({

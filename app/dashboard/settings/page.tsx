@@ -4,7 +4,7 @@ import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { AlertCircle, Check, Globe, Mail, Save, Server, SettingsIcon, Shield, Tv, Users } from "lucide-react"
+import { AlertCircle, Check, Globe, Mail, Save, Server, Settings, Shield, Tv, Users } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -13,7 +13,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from "@/components/ui/use-toast"
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/sonner"  // <-- updated import path
 import { Separator } from "@/components/ui/separator"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
@@ -202,7 +202,7 @@ export default function SettingsPage() {
         <div className="bg-background sticky top-0 z-10 w-full border-b pb-4">
           <TabsList className="w-full max-w-3xl grid grid-cols-4 h-11">
             <TabsTrigger value="general" className="flex items-center gap-2">
-              <SettingsIcon className="h-4 w-4" />
+              <Settings className="h-4 w-4" />
               <span className="hidden sm:inline">General</span>
             </TabsTrigger>
             <TabsTrigger value="content" className="flex items-center gap-2">
@@ -226,7 +226,7 @@ export default function SettingsPage() {
             <Card className="md:col-span-2">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <SettingsIcon className="h-5 w-5" />
+                  <Settings className="h-5 w-5" />
                   General Settings
                 </CardTitle>
                 <CardDescription>Configure the basic settings for your anime streaming platform</CardDescription>

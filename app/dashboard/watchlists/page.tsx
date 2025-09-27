@@ -4,11 +4,13 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useAuth } from "@/context/auth-context"
 import { userApi, type User } from "@/lib/api-client"
+import { watchlistApi } from "@/lib/api-client"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
-import { Loader2, Search, BookmarkIcon, Users } from "lucide-react"
+import { Loader2, Search, Bookmark, Users } from "lucide-react"  // <-- Bookmark instead of BookmarkIcon
+
 
 export default function WatchlistsPage() {
   const { token } = useAuth()
@@ -27,7 +29,19 @@ export default function WatchlistsPage() {
     setIsLoading(true)
     try {
       const data = await userApi.getUsers(token)
-      setUsers(data)
+      // fetch all watchlists once to show counts per user
+      try {
+        const all = await watchlistApi.getAllWatchlists(token)
+        const counts = all.reduce<Record<number, number>>((acc, item) => {
+          acc[item.user_id] = (acc[item.user_id] || 0) + 1
+          return acc
+        }, {})
+        // attach count to user objects in a lightweight way
+        const usersWithCounts = data.map((u) => ({ ...u, watchlistCount: counts[u.id] || 0 }))
+        setUsers(usersWithCounts as any)
+      } catch (e) {
+        setUsers(data)
+      }
     } catch (error) {
       console.error("Failed to fetch users:", error)
       toast({
@@ -106,7 +120,7 @@ export default function WatchlistsPage() {
                           <h3 className="font-medium">{user.username}</h3>
                           <p className="truncate text-sm text-muted-foreground">{user.email}</p>
                           <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-                            <BookmarkIcon className="h-3 w-3" />
+                            <Bookmark className="h-3 w-3" />
                             <span>View Watchlist</span>
                           </div>
                         </div>

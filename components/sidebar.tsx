@@ -88,16 +88,51 @@ export function Sidebar() {
                       </div>
                     )
                   }
+
+                  const isActive = pathname === item.href
+                  const isDashboard = item.title === "Dashboard"
+                  const isContent = item.title === "Content"
+                  const isUsers = item.title === "Users"
+                  const isWatchlists = item.title === "Watchlists"
+                  const isSettings = item.title === "Settings"
+                  const baseClasses = "group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors"
+                  const hoverClasses = isDashboard
+                    ? "hover:bg-blue-600 hover:text-white"
+                    : isContent
+                    ? "hover:bg-purple-600 hover:text-white"
+                    : isUsers
+                    ? "hover:bg-green-600 hover:text-white"
+                    : isWatchlists
+                    ? "hover:bg-amber-600 hover:text-white"
+                    : isSettings
+                    ? "hover:bg-gray-600 hover:text-white"
+                    : "hover:bg-accent hover:text-accent-foreground"
+                  const activeClasses = isDashboard
+                    ? "bg-blue-600 text-white"
+                    : isContent
+                    ? "bg-purple-600 text-white"
+                    : isUsers
+                    ? "bg-green-600 text-white"
+                    : isWatchlists
+                    ? "bg-amber-600 text-white"
+                    : isSettings
+                    ? "bg-gray-600 text-white"
+                    : "bg-accent text-accent-foreground"
+
+                  const iconColor = isActive ? "text-white" : item.color
+                  const iconHover = isDashboard || isContent || isUsers || isWatchlists || isSettings ? "group-hover:text-white" : "group-hover:text-accent-foreground"
+
                   return (
                     <Link
                       key={item.href}
                       href={item.href}
                       className={cn(
-                        "group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors",
-                        pathname === item.href ? "bg-accent text-accent-foreground" : "transparent",
+                        baseClasses,
+                        hoverClasses,
+                        isActive ? activeClasses : "transparent",
                       )}
                     >
-                      <item.icon className={cn("h-4 w-4", item.color)} />
+                      <item.icon className={cn("h-4 w-4", iconColor, iconHover)} />
                       <span>{item.title}</span>
                     </Link>
                   )
@@ -107,19 +142,27 @@ export function Sidebar() {
             <div className="px-3 py-2">
               <h2 className="mb-2 px-4 text-xs font-semibold tracking-tight text-muted-foreground">Support</h2>
               <div className="space-y-1">
-                {secondarySidebarItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      "group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors",
-                      pathname === item.href ? "bg-accent text-accent-foreground" : "transparent",
-                    )}
-                  >
-                    <item.icon className={cn("h-4 w-4", item.color)} />
-                    <span>{item.title}</span>
-                  </Link>
-                ))}
+                {secondarySidebarItems.map((item) => {
+                  const isActive = pathname === item.href
+                  const isHelp = item.title === "Help & Support"
+                  const hoverClasses = isHelp ? "hover:bg-teal-600 hover:text-white" : "hover:bg-accent hover:text-accent-foreground"
+                  const activeClasses = isHelp ? "bg-teal-600 text-white" : "bg-accent text-accent-foreground"
+
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={cn(
+                        "group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                        hoverClasses,
+                        isActive ? activeClasses : "transparent",
+                      )}
+                    >
+                      <item.icon className={cn("h-4 w-4", item.color, isHelp ? "group-hover:text-white" : "")} />
+                      <span>{item.title}</span>
+                    </Link>
+                  )
+                })}
               </div>
             </div>
           </nav>

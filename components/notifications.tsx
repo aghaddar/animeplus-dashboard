@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Bell } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -102,9 +103,11 @@ export function Notifications() {
         </ScrollArea>
         <Separator />
         <div className="p-2">
-          <Button variant="outline" size="sm" className="w-full">
-            View all notifications
-          </Button>
+          <Link href="/dashboard/notifications">
+            <Button variant="outline" size="sm" className="w-full">
+              View all notifications
+            </Button>
+          </Link>
         </div>
       </PopoverContent>
     </Popover>
