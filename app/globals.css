@@ -74,6 +74,22 @@ body {
     hsl(var(--background));
 }
 
+/* Prevent horizontal overflow on small screens */
+html,
+body,
+#__next {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Ensure images and media scale within their containers */
+img,
+video,
+iframe {
+  max-width: 100%;
+  height: auto;
+}
+
 /* Hide scrollbar for Chrome, Safari and Opera */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;

@@ -3,7 +3,10 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { BarChart3, FilmIcon, LayoutDashboard, Settings, Users, HelpCircle, BookmarkIcon } from "lucide-react"
+import { BarChart3, FilmIcon, LayoutDashboard, Settings, Users, HelpCircle, BookmarkIcon, X } from "lucide-react"
+import { Notifications } from "@/components/notifications"
+import { ThemeToggle } from "@/components/theme-toggle"
+import { UserNav } from "@/components/user-nav"
 
 const sidebarItems = [
   {
@@ -54,27 +57,51 @@ const secondarySidebarItems = [
   },
 ]
 
-export function Sidebar() {
+export function Sidebar({ mobile = false, onClose }: { mobile?: boolean; onClose?: () => void }) {
   const pathname = usePathname()
 
+  const rootClass = mobile
+    ? "fixed inset-y-0 left-0 z-50 w-56 max-w-[85%] min-w-0 border-r bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 block overflow-y-auto h-screen self-start"
+    : "hidden w-64 min-w-0 border-r bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:block overflow-y-auto sticky top-0 h-screen self-start"
+
   return (
-  <aside data-sidebar="root" className="hidden w-64 min-w-0 border-r bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:block overflow-y-auto sticky top-0 h-screen self-start">
+  <aside data-sidebar="root" className={rootClass}>
     <div className="flex h-full max-h-screen flex-col gap-2">
-        <div className="flex h-14 items-center border-b px-6">
+        <div className="relative flex h-14 items-center border-b px-6">
           <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
             <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10">
               <FilmIcon className="h-4 w-4 text-primary" />
             </div>
-            <span className="text-lg">
+            <span className="text-base md:text-lg">
               <span className="gradient-text font-bold">Anime</span>Admin
             </span>
           </Link>
+          {mobile ? (
+            <button
+              onClick={() => onClose?.()}
+              aria-label="Close menu"
+              className="absolute right-3 top-3 inline-flex items-center rounded-md p-1 text-muted-foreground hover:bg-accent"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          ) : null}
         </div>
+        {mobile ? (
+          <div className="flex items-center justify-between gap-3 border-b px-4 py-2">
+            <div className="flex items-center gap-2">
+              <Notifications />
+              <ThemeToggle />
+            </div>
+            <div className="flex items-center">
+              <UserNav />
+            </div>
+          </div>
+        ) : null}
         <div className="flex-1 overflow-auto py-2">
           <nav className="grid items-start px-4 text-sm font-medium">
             <div className="px-3 py-2">
               <h2 className="mb-2 px-4 text-xs font-semibold tracking-tight text-muted-foreground">Main</h2>
-              <div className="space-y-1">
+          <div className="space-y-1">
                 {sidebarItems.map((item) => {
                   if (item.disabled) {
                     return (
@@ -95,7 +122,7 @@ export function Sidebar() {
                   const isUsers = item.title === "Users"
                   const isWatchlists = item.title === "Watchlists"
                   const isSettings = item.title === "Settings"
-                  const baseClasses = "group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors"
+                  const baseClasses = "group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium transition-colors md:gap-3 md:px-3 md:py-2"
                   const hoverClasses = isDashboard
                     ? "hover:bg-blue-600 hover:text-white"
                     : isContent
@@ -131,6 +158,7 @@ export function Sidebar() {
                         hoverClasses,
                         isActive ? activeClasses : "transparent",
                       )}
+                      onClick={() => mobile ? onClose?.() : undefined}
                     >
                       <item.icon className={cn("h-4 w-4", iconColor, iconHover)} />
                       <span>{item.title}</span>
@@ -157,6 +185,7 @@ export function Sidebar() {
                         hoverClasses,
                         isActive ? activeClasses : "transparent",
                       )}
+                      onClick={() => mobile ? onClose?.() : undefined}
                     >
                       <item.icon className={cn("h-4 w-4", item.color, isHelp ? "group-hover:text-white" : "")} />
                       <span>{item.title}</span>
@@ -167,8 +196,8 @@ export function Sidebar() {
             </div>
           </nav>
         </div>
-        <div className="mt-auto p-4">
-          <div className="rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 p-4 text-white">
+            <div className="mt-auto p-3 md:p-4">
+          <div className="rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 p-3 md:p-4 text-white">
             <h3 className="mb-2 font-medium">Need help?</h3>
             <p className="mb-3 text-xs text-blue-100">Check our documentation for quick answers to common questions.</p>
             <Link
