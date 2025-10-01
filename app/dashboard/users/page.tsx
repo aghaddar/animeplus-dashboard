@@ -38,6 +38,8 @@ export default function UsersPage() {
     fetchUsers()
   }, [token, toast])
 
+  // Edit/Delete handlers removed to revert to previous state
+
   return (
     <div className="container mx-auto py-10">
       <div className="flex justify-between items-center mb-6">
@@ -92,12 +94,11 @@ export default function UsersPage() {
                       </td>
                       <td className="py-3 px-4">{new Date(user.created_at).toLocaleDateString()}</td>
                       <td className="py-3 px-4 text-right">
-                        <Button variant="ghost" size="sm">
-                          Edit
-                        </Button>
-                        <Button variant="ghost" size="sm" className="text-destructive">
-                          Delete
-                        </Button>
+                        <div className="inline-flex items-center gap-2">
+                          <Button variant="ghost" size="sm">
+                            Manage
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   ))}

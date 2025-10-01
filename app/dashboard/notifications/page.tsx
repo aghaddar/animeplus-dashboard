@@ -26,24 +26,22 @@ export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<Notification[]>(initialNotifications)
   const router = useRouter()
 
-  const markAsRead = (id: string) => {
-    setNotifications((s) => s.map((n) => (n.id === id ? { ...n, read: true } : n)))
-  }
-
   const markAllAsRead = () => setNotifications((s) => s.map((n) => ({ ...n, read: true })))
 
   return (
     <div className="container mx-auto py-6">
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex items-center justify-between flex-wrap gap-2">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Notifications</h1>
           <p className="text-muted-foreground">All notifications for your account</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => router.back()}>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => router.back()} className="flex-shrink-0">
             Back
           </Button>
-          <Button onClick={markAllAsRead}>Mark all as read</Button>
+          <Button onClick={markAllAsRead} className="flex-shrink-0">
+            Mark all as read
+          </Button>
         </div>
       </div>
 
@@ -58,22 +56,15 @@ export default function NotificationsPage() {
               {notifications.length === 0 ? (
                 <div className="p-8 text-center text-muted-foreground">No notifications</div>
               ) : (
-                notifications.map((n) => (
+                notifications.map((n, idx) => (
                   <div
                     key={n.id}
-                    className={`p-4 rounded-md border ${n.read ? "bg-card" : "bg-muted/20"}`}
+                    className={`p-4 rounded-md border ${n.read ? "bg-card" : "bg-muted/20"} ${idx === 0 ? "mt-2" : ""}`}
                   >
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="font-medium">{n.title}</div>
                         <div className="text-xs text-muted-foreground">{n.time}</div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {!n.read && (
-                          <Button size="sm" variant="ghost" onClick={() => markAsRead(n.id)}>
-                            Mark read
-                          </Button>
-                        )}
                       </div>
                     </div>
                     <div className="mt-2 text-sm text-muted-foreground">{n.description}</div>
